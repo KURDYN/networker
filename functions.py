@@ -1,0 +1,1 @@
+"""tutaj będą funkcje różne"""

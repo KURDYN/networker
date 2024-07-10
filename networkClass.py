@@ -1,0 +1,1 @@
+"""tutaj będzie klasa network"""
