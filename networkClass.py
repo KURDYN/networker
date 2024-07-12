@@ -1,14 +1,21 @@
 from net_functions import *
 class Network:
     """
-    Network
+    Network:
         property specs:
+
         __status - 'WORKING' - 1, 'NOT WORKING' - 0
-        __prefix - network address, template 'XXX.XXX.XXX.XXX'
-        __mask - subnet mask, template '/MM', between 24 and 30
-        __broadcast - broadcast address, template 'XXX.XXX.XXX.XXX'
-        __usable - amount of usable host addresses
+
+        __prefix - network address
+
+        __mask - subnet mask, between 24 and 30
+
+        __broadcast - broadcast address,
+
         __range - host range
+
+        __usable - amount of usable host addresses
+
         __hosts - list of host addresses and their status
     """
 
@@ -18,21 +25,22 @@ class Network:
         self.mask = address[-3:]
         self.broadcast = set_bcast(self.prefix, self.mask)
         self.usable = masks[self.mask]["usable"]
-        #self.range = find_range(self.prefix, self.broadcast)[0]+' - '+find_range(self.prefix, self.broadcast)[1]
+        self.range = find_range(self.prefix, self.broadcast)
         self.hosts = []
 
-    """def __str__(self):
+    def __str__(self):
         if self.status == 0:
             status = 'NOT WORKING'
         else:
             status = 'WORKING'
-        output = 'Network prefix: ' + self.prefix+'\n'
-        output += 'Network status: '+status+'\n'
+        output = 'Network prefix: ' + addr_dec_str(self.prefix)+'\n'
         output += 'Subnet mask: ' + self.mask + ', ' + masks[self.mask]["dec"] + '\n'
-        output += 'Network broadcast address: ' + self.broadcast + '\n'
-        output += 'Number of usable addresses: ' + str(self.usable) + ', used: ' + str(len(self.hosts)) + ' (' + str(masks[self.mask]["usable"]) + ' max)\n'
-        output += 'Usable addresses range: ' + self.range + '\n'
-        return output"""
+        output += 'Network broadcast address: ' + addr_dec_str(self.broadcast) + '\n'
+        output += 'Usable addresses range: ' + addr_dec_str(self.range[0])+ " - " + addr_dec_str(self.range[1]) + '\n'
+        output += 'Number of usable addresses: ' + str(self.usable) + ', used: ' + str(len(self.hosts)) + ' (' + str(
+            masks[self.mask]["usable"]) + ' max)\n'
+        output += 'Network status: ' + status + '\n'
+        return output
 
     def view_stat(self):
         print(self.status)

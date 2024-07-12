@@ -69,28 +69,52 @@ def addr_bin_to_dec(addr_bin):
         addr_dec.append(int(octet, 2))
     return addr_dec
 
+def addr_dec_str(address):
+    #converting bin/dec address list to dotted string form for __str__ function
+    addr_dec = ""
+    if isinstance(address[0], str):
+        for octet in address:
+            addr_dec += str(int(octet, 2)) + "."
+    else:
+        for octet in address:
+            addr_dec += str(octet) + "."
+    return addr_dec[:-1]
+
 def set_prefix(address):
     if match("^([0-9]{1,3}\.){3}[0-9]{1,3}\/[0-9]{1,2}$", address):
-        # finding prefix
+        # extracting prefix
         addr = addr_div(address)
         prefix = addr_dec_to_bin(addr[0])
         # checking if the input is correct (an octet can't be greater than 255, mask must be between 23 and 31)
         if all(x < 256 for x in addr[0]) and addr[1] in range(24, 31):
-            print("address correct\n")
-            return prefix
+            #further checking if the input is correct (network address cant be just any address)
+            mask_bin = masks["/"+str(addr[1])]["bin"].split(".")
+            prefix_correct = [[],[],[],[]]
+            for i in range(4):
+                octet = ""
+                for j in range(8):
+                    if mask_bin[i][j] == "1":
+                        octet += prefix[i][j]
+                    else:
+                        octet += "0"
+                prefix_correct[i] = octet
+            if prefix_correct == prefix:
+                return prefix
+            else:
+                print("address incorrect, the correct prefix for address " + addr_dec_str(prefix) + " with mask " + "/"+str(addr[1]) +" is " + addr_dec_str(prefix_correct) + ", use it instead")
         else:
-            print("address incorrect, use template 'XXX.XXX.XXX.XXX/MM'")
+            print("address incorrect, value of octet i 0-255 and value of mask 24-30")
     else:
         print("address incorrect, use template 'XXX.XXX.XXX.XXX/MM'")
 
 def set_bcast(prefix, mask):
-    mask = masks[mask]["bin"].split(".")
+    mask_bin = masks[mask]["bin"].split(".")
     bcast = [[],[],[],[]]
     # extracting bin broadcast
     for i in range(4):
         octet = ""
         for j in range(8):
-            if mask[i][j] == "1":
+            if mask_bin[i][j] == "1":
                 octet += prefix[i][j]
             else:
                 octet += "1"
@@ -99,18 +123,9 @@ def set_bcast(prefix, mask):
 
 
 def find_range(prefix, broadcast):
-    first = prefix.split(".")
-    first[3] = int(first[3]) + 1
-    first_dec = ''
-    for octet in first:
-        first_dec += str(octet) + "."
-    first_dec = first_dec[:-1]
-
-    # last usable of range is the last octet of broadcast - 1
-    last = broadcast.split(".")
-    last[3] = int(last[3]) - 1
-    last_dec = ''
-    for octet in last:
-        last_dec += str(octet) + "."
-    last_dec = last_dec[:-1]
-    return first_dec, last_dec
+    range = [[],[]]
+    range[0] = addr_bin_to_dec(prefix)
+    range[0][3] = range[0][3] + 1
+    range[1] = addr_bin_to_dec(broadcast)
+    range[1][3] = range[1][3] - 1
+    return range

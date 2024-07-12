@@ -1,4 +1,3 @@
 Co dodać:
-    1. Wykrywanie poprawnego adresu sieci i sugestia w razie błędu
-    2. Naprawić znajdowanie range'a
-    3. Naprawić __str__
+    1. ogarnąć klasę host
+    2. połączenie klasy network z klasą host
