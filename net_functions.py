@@ -36,6 +36,86 @@ masks = {
         "dec": "255.255.255.0",
         "usable": 254
     },
+    "/23": {
+        "bin": "11111111.11111111.11111110.00000000",
+        "dec": "255.255.254.0",
+        "usable": 512
+    },
+    "/22": {
+        "bin": "11111111.11111111.11111100.00000000",
+        "dec": "255.255.252.0",
+        "usable": 1024
+    },
+    "/21": {
+        "bin": "11111111.11111111.11111000.00000000",
+        "dec": "255.255.248.0",
+        "usable": 2048
+    },
+    "/20": {
+        "bin": "11111111.11111111.11110000.00000000",
+        "dec": "255.255.240.0",
+        "usable": 4096
+    },
+    "/19": {
+        "bin": "11111111.11111111.11100000.00000000",
+        "dec": "255.255.224.0",
+        "usable": 8192
+    },
+    "/18": {
+        "bin": "11111111.11111111.11000000.00000000",
+        "dec": "255.255.192.0",
+        "usable": 16384
+    },
+    "/17": {
+        "bin": "11111111.11111111.10000000.00000000",
+        "dec": "255.255.128.0",
+        "usable": 32768
+    },
+    "/16": {
+        "bin": "11111111.11111111.00000000.00000000",
+        "dec": "255.255.0.0",
+        "usable": 65536
+    },
+    "/15": {
+        "bin": "11111111.11111110.00000000.00000000",
+        "dec": "255.254.0.0",
+        "usable": 131072
+    },
+    "/14": {
+        "bin": "11111111.11111100.00000000.00000000",
+        "dec": "255.252.0.0",
+        "usable": 262144
+    },
+    "/13": {
+        "bin": "11111111.11111000.00000000.00000000",
+        "dec": "255.248.0.0",
+        "usable": 524288
+    },
+    "/12": {
+        "bin": "11111111.11110000.00000000.00000000",
+        "dec": "255.240.0.0",
+        "usable": 1048576
+    },
+    "/11": {
+        "bin": "11111111.11100000.00000000.00000000",
+        "dec": "255.224.0.0",
+        "usable": 2097152
+    },
+    "/10": {
+        "bin": "11111111.11000000.00000000.00000000",
+        "dec": "255.192.0.0",
+        "usable": 4194304
+    },
+    "/9": {
+        "bin": "11111111.10000000.00000000.00000000",
+        "dec": "255.128.0.0",
+        "usable": 8388608
+    },
+    "/8": {
+        "bin": "11111111.00000000.00000000.00000000",
+        "dec": "255.0.0.0",
+        "usable": 16777216
+    },
 }
 
 def addr_div(addr):
@@ -62,7 +142,7 @@ def addr_dec_to_bin(addr_dec):
 
 def addr_bin_to_dec(addr_bin):
     # addr_bin = [[XXXXXXXX][XXXXXXXX][XXXXXXXX][XXXXXXXX]] (all str)
-    # converting decimal address form to binary
+    # converting binary address form to decimal
     addr_dec = []
     # converting octets bin to dec
     for octet in addr_bin:
@@ -70,7 +150,7 @@ def addr_bin_to_dec(addr_bin):
     return addr_dec
 
 def addr_dec_str(address):
-    #converting bin/dec address list to dotted string form for __str__ function
+    #converting bin/dec address list to dotted string form for __str__ function/other uses
     addr_dec = ""
     if isinstance(address[0], str):
         for octet in address:
@@ -86,7 +166,7 @@ def set_prefix(address):
         addr = addr_div(address)
         prefix = addr_dec_to_bin(addr[0])
         # checking if the input is correct (an octet can't be greater than 255, mask must be between 23 and 31)
-        if all(x < 256 for x in addr[0]) and addr[1] in range(24, 31):
+        if all(x < 256 for x in addr[0]) and addr[1] in range(8, 31):
             #further checking if the input is correct (network address cant be just any address)
             mask_bin = masks["/"+str(addr[1])]["bin"].split(".")
             prefix_correct = [[],[],[],[]]
@@ -101,11 +181,11 @@ def set_prefix(address):
             if prefix_correct == prefix:
                 return prefix
             else:
-                print("address incorrect, the correct prefix for address " + addr_dec_str(prefix) + " with mask " + "/"+str(addr[1]) +" is " + addr_dec_str(prefix_correct) + ", use it instead")
+                print("Address incorrect, the correct prefix for address " + addr_dec_str(prefix) + " with mask " + "/"+ str(addr[1]) +" is " + addr_dec_str(prefix_correct) + ", use it instead!")
         else:
-            print("address incorrect, value of octet i 0-255 and value of mask 24-30")
+            print("Address incorrect, value of octet is 0-255 and value of mask is 24-30.")
     else:
-        print("address incorrect, use template 'XXX.XXX.XXX.XXX/MM'")
+        print("Address incorrect, use template 'XXX.XXX.XXX.XXX/MM'.")
 
 def set_bcast(prefix, mask):
     mask_bin = masks[mask]["bin"].split(".")

@@ -59,5 +59,30 @@ class Network:
         elif self.status == 0:
             print('Network is already off.\n')
 
+    def vlsm(self):
+        subnet_sizes = []
+        num = 1
+        sum = 0
+        while True:
+            size = input("Insert size of Subnet" + str(num) + ", or type 'end' to finish: \n")
+            if size == 'end':
+                print(subnet_sizes)
+                break
+            else:
+                try:
+                    size = int(size)
+                    sum += size
+                    if sum > self.usable:
+                        print("Your subnets exceed max number of hosts in this network (" + str(
+                            self.usable) + "), try again. \n")
+                        subnet_sizes = []
+                        num = 0
+                    else:
+                        subnet_sizes.append(size)
+                except ValueError:
+                    print("This is not a number. Try again.")
+                    num -= 1
+            num += 1
+
     def add_host(self):
         print()
