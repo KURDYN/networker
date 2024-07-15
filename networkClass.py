@@ -77,12 +77,20 @@ class Network:
                             self.usable) + "), try again. \n")
                         subnet_sizes = []
                         num = 0
+                        sum = 0
                     else:
-                        subnet_sizes.append(size)
+                        subnet_sizes.append([num, size])
                 except ValueError:
                     print("This is not a number. Try again.")
                     num -= 1
             num += 1
+        subnet_sizes.sort(key=lambda x: x[1], reverse=True)
+        print(subnet_sizes)
+        print(self)
+        subnet_data = [{"name": "Network", "addr": f"{addr_dec_str(self.prefix)}{self.mask}"}]
+        for subnet in subnet_sizes:
+            subnet_data.append({"name": f"Subnet{subnet[0]}", "addr": f"adres{str(subnet[1])}"})
+        print(subnet_data)
 
     def add_host(self):
         print()
