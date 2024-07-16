@@ -26,6 +26,7 @@ class Network:
         self.broadcast = set_bcast(self.prefix, self.mask)
         self.usable = masks[self.mask]["usable"]
         self.range = find_range(self.prefix, self.broadcast)
+        self.vlsm_info = {"Network": "VLSM is not set up."}
         self.hosts = []
 
     def __str__(self):
@@ -63,17 +64,18 @@ class Network:
         subnet_sizes = []
         num = 1
         sum = 0
+        #checking if input is correct
         while True:
-            size = input("Insert size of Subnet" + str(num) + ", or type 'end' to finish: \n")
+            size = input("Insert number of hosts in Subnet" + str(num) + ", or type 'end' to finish: \n")
             if size == 'end':
-                print(subnet_sizes)
                 break
             else:
                 try:
                     size = int(size)
-                    sum += size
-                    if sum > self.usable:
-                        print("Your subnets exceed max number of hosts in this network (" + str(
+                    right_mask = find_mask(size)
+                    sum += masks[right_mask]["usable"]
+                    if sum > self.usable-(2*(num-1)):
+                        print("Your subnets exceed max number of usable addresses in this network (" + str(
                             self.usable) + "), try again. \n")
                         subnet_sizes = []
                         num = 0
@@ -84,13 +86,26 @@ class Network:
                     print("This is not a number. Try again.")
                     num -= 1
             num += 1
+        #sorting sizes descending for vlsm
         subnet_sizes.sort(key=lambda x: x[1], reverse=True)
-        print(subnet_sizes)
-        print(self)
-        subnet_data = [{"name": "Network", "addr": f"{addr_dec_str(self.prefix)}{self.mask}"}]
-        for subnet in subnet_sizes:
-            subnet_data.append({"name": f"Subnet{subnet[0]}", "addr": f"adres{str(subnet[1])}"})
-        print(subnet_data)
+        #creating and storing Network objects for subsequent subnets
+        vlsm = {}
+        #first network
+        first_mask = find_mask(subnet_sizes[0][1])
+        vlsm["Subnet"+str(subnet_sizes[0][0])] = Network(f"{addr_dec_str(self.prefix)}{first_mask}")
+        #the rest of networks
+        for num in range(1, len(subnet_sizes)):
+            right_mask = find_mask(subnet_sizes[num][1])
+            right_prefix = addr_bin_to_dec(vlsm["Subnet"+str(subnet_sizes[num-1][0])].broadcast)
+            right_prefix[3] += 1
+            vlsm["Subnet" + str(subnet_sizes[num][0])] = Network(f"{addr_dec_str(right_prefix)}{right_mask}")
+            num += 1
+        self.vlsm_info = vlsm
+        print(f"Network subnetted succesfully. Assigned: X% (NUM), Used: X% (NUM), Unassigned: X% (NUM)")
+
+    def get_vlsm_info(self):
+        for name, subnet in self.vlsm_info.items():
+            print(f"{name}:\n{subnet}", end="\n")
 
     def add_host(self):
         print()

@@ -209,3 +209,11 @@ def find_range(prefix, broadcast):
     range[1] = addr_bin_to_dec(broadcast)
     range[1][3] = range[1][3] - 1
     return range
+
+def find_mask(size):
+    right_mask = ""
+    for mask in masks:
+        if size <= masks[mask]["usable"]:
+            right_mask = mask
+            break
+    return right_mask
