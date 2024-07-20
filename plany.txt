@@ -1,4 +1,3 @@
 Co dodać:
-    1. vlsm - obliczanie ile adresów użyto
-    2. ogarnąć klasę host
-    3. połączenie klasy network z klasą host
+    1. ogarnąć klasę host
+    2. połączenie klasy network z klasą host

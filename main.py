@@ -1,6 +1,6 @@
 from networkClass import *
 from net_functions import *
-siec1 = Network("192.168.32.0/24")
+siec1 = Network("192.168.168.0/23")
 print(siec1)
 siec1.get_vlsm_info()
 siec1.vlsm()

@@ -164,6 +164,10 @@ def set_prefix(address):
     if match("^([0-9]{1,3}\.){3}[0-9]{1,3}\/[0-9]{1,2}$", address):
         # extracting prefix
         addr = addr_div(address)
+        for i in range(3, 0, -1):
+            if addr[0][i] == 256:
+                addr[0][i-1] += 1
+                addr[0][i] = 0
         prefix = addr_dec_to_bin(addr[0])
         # checking if the input is correct (an octet can't be greater than 255, mask must be between 23 and 31)
         if all(x < 256 for x in addr[0]) and addr[1] in range(8, 31):
