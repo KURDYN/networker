@@ -1,4 +1,5 @@
 from re import match
+
 '''-----------[subnet mask information]-----------'''
 masks = {
     "/30": {
