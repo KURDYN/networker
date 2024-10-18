@@ -1,4 +1,5 @@
 Co dodać:
     0. POZAMIENIAĆ LISTY NA KROTKI GDZIE MOŻNA
+    0.5. REGEX
     1. ogarnąć klasę host
     2. połączenie klasy network z klasą host
